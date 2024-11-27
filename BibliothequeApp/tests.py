@@ -1,5 +1,6 @@
-from django.test import TestCase
+from django.test import TestCase , Client
 from BibliothequeApp.models import Abonne, Document, Emprunt
+
 
 class AbonneModelTest(TestCase):
     def setUp(self):
@@ -30,3 +31,5 @@ class EmpruntModelTest(TestCase):
 
     def test_emprunt_creation(self):
         self.assertEqual(self.emprunt.statut_emprunt, "En cours")
+
+

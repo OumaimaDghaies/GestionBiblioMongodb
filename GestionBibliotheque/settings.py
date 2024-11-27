@@ -85,6 +85,10 @@ DATABASES = {
         'ENGINE': 'djongo',
         'NAME': 'GestionBiblio',
         'ENFORCE_SCHEMA': False,
+        'CLIENT': {
+            'host': 'localhost',
+            'port': 27017
+        },
         
         
     }
