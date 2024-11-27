@@ -86,6 +86,7 @@ DATABASES = {
         'NAME': 'GestionBiblio',
         'ENFORCE_SCHEMA': False,
         
+        
     }
 }
 
