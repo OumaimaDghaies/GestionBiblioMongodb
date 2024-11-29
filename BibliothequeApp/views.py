@@ -1,12 +1,22 @@
+from pyexpat.errors import messages
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
 from .models import Abonne, Document, Emprunt
 from .forms import AbonneForm, DocumentForm, EmpruntForm  
+from django.contrib.auth import authenticate, login, logout
+
 
 # Vues pour Abonne
+from django.contrib import messages
+
 def abonne_list(request):
-    abonnes = Abonne.objects.all()  
-    return render(request, 'abonne_list.html', {'abonnes': abonnes})
+    query = request.GET.get('q', '').strip()  # Récupère le paramètre 'q' depuis l'URL
+    if query:  # Si une recherche est effectuée
+        abonnes = Abonne.objects.filter(nom__icontains=query)  # Recherche insensible à la casse
+    else:  # Si aucune recherche, renvoyer tous les abonnés
+        abonnes = Abonne.objects.all()
+
+    return render(request, 'abonne_list.html', {'abonnes': abonnes, 'query': query})
 
 def abonne_create(request):
     if request.method == 'POST':
@@ -136,3 +146,29 @@ def dashboard(request):
         'count_document': count_document,
         'count_emprunt': count_emprunt,
     })
+
+def user_login(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')  # Récupère le champ 'username'
+        password = request.POST.get('password')  # Récupère le champ 'password'
+
+        # Vérification des champs vides
+        if not username or not password:
+            messages.error(request, "Veuillez remplir tous les champs.")
+            return render(request, 'login.html')
+
+        # Authentification de l'utilisateur
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)  # Connecte l'utilisateur
+            next_url = request.GET.get('next', 'dashboard')  # Redirige vers 'next' ou la page 'dashboard'
+            return redirect(next_url)
+        else:
+            messages.error(request, "Nom d'utilisateur ou mot de passe incorrect.")
+            return render(request, 'login.html')
+    
+    return render(request, 'login.html')
+
+def user_logout(request):
+    logout(request)
+    return redirect('login')  

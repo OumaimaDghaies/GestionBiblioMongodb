@@ -25,13 +25,30 @@
                     <li class="nav-item">
                         <a class="nav-link " href="{% url 'emprunt_list' %}">Emprunts</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-danger" href="{% url 'logout' %}">Déconnexion</a>
+                    </li>
                 </ul>
             </div>
         </div>
     </nav>
     <div class="container mt-4">
         <h1>Liste des Abonnés</h1>
-        <a href="{% url 'abonne_create' %}" class="btn btn-primary mb-3">Ajouter un Abonné</a>
+    
+        <!-- Formulaire de recherche -->
+        <form method="get" class="d-flex mb-3">
+            <input 
+                type="text" 
+                name="q" 
+                class="form-control me-2" 
+                placeholder="Rechercher un abonné par nom" 
+                value="{{ query|default:'' }}">
+            <button type="submit" class="btn btn-primary">Rechercher</button>
+        </form>
+    
+        <a href="{% url 'abonne_create' %}" class="btn btn-success mb-3">Ajouter un Abonné</a>
+    
+        <!-- Table des abonnés -->
         <table class="table table-bordered">
             <thead>
                 <tr>
@@ -44,21 +61,28 @@
                 </tr>
             </thead>
             <tbody>
-                {% for abonne in abonnes %}
-                <tr>
-                    <td>{{ abonne.cin }}</td>
-                    <td>{{ abonne.nom }}</td>
-                    <td>{{ abonne.prenom }}</td>
-                    <td>{{ abonne.adresse }}</td>
-                    <td>{{ abonne.date_inscription }}</td>
-                    <td>
-                        <a href="{% url 'abonne_update' abonne.id %}" class="btn btn-warning btn-sm">Modifier</a>
-                        <a href="{% url 'abonne_delete' abonne.id %}" class="btn btn-danger btn-sm">Supprimer</a>
-                    </td>
-                </tr>
-                {% endfor %}
+                {% if abonnes %}
+                    {% for abonne in abonnes %}
+                    <tr>
+                        <td>{{ abonne.cin }}</td>
+                        <td>{{ abonne.nom }}</td>
+                        <td>{{ abonne.prenom }}</td>
+                        <td>{{ abonne.adresse }}</td>
+                        <td>{{ abonne.date_inscription }}</td>
+                        <td>
+                            <a href="{% url 'abonne_update' abonne.id %}" class="btn btn-warning btn-sm">Modifier</a>
+                            <a href="{% url 'abonne_delete' abonne.id %}" class="btn btn-danger btn-sm">Supprimer</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="6" class="text-center">Aucun abonné trouvé.</td>
+                    </tr>
+                {% endif %}
             </tbody>
         </table>
     </div>
+    
 </body>
 </html>
