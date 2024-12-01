@@ -1,0 +1,26 @@
+# Utiliser une image Python comme base
+FROM python:3.9-slim
+
+# Définir le répertoire de travail
+WORKDIR /app
+
+# Copier les fichiers nécessaires
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copier le reste des fichiers
+COPY . .
+
+# Configurer les variables d'environnement pour Django
+ENV DJANGO_SETTINGS_MODULE=GestionBibliotheque.settings
+
+# Appliquer les migrations et collecter les fichiers statiques
+RUN python manage.py makemigrations
+RUN python manage.py migrate
+RUN python manage.py collectstatic --noinput
+
+# Exposer le port par défaut de Django
+EXPOSE 8000
+
+# Commande pour démarrer le serveur
+CMD ["python3", "manage.py", "runserver", "0.0.0.0:8000"]
